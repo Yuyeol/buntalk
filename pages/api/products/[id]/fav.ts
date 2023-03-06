@@ -13,7 +13,7 @@ async function handler(
   } = req
   const alreadyExists = await client.fav.findFirst({
     where: {
-      productId: +id.toString(),
+      productId: parseInt(id as string),
       userId: user?.id,
     },
   })
@@ -33,7 +33,7 @@ async function handler(
         },
         product: {
           connect: {
-            id: +id.toString(),
+            id: parseInt(id as string),
           },
         },
       },
