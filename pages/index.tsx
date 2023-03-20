@@ -4,8 +4,9 @@ import Item from '@components/item'
 import Layout from '@components/layout'
 import useUser from '@libs/client/useUser'
 import Head from 'next/head'
-import useSWR from 'swr'
+import useSWR, { SWRConfig } from 'swr'
 import { Product } from '@prisma/client'
+import client from '@libs/server/client'
 
 export interface ProductWithCount extends Product {
   _count: {
@@ -57,5 +58,40 @@ const Home: NextPage = () => {
     </Layout>
   )
 }
+const Page: NextPage<{ products: ProductWithCount[] }> = ({ products }) => {
+  return (
+    // SWR에서 캐싱 되기 전 초기값이 getServerSideProps에서 가져온 값으로 설정됩니다. 이렇게 하면 로딩을 안보여줘도 됩니다.
+    // 이렇게 되면 SSR과 SWR의 효과를 모두 얻을 수 있습니다.
+    <SWRConfig
+      value={{
+        fallback: {
+          '/api/products': {
+            ok: true,
+            products,
+          },
+        },
+      }}
+    >
+      <Home />
+    </SWRConfig>
+  )
+}
 
-export default Home
+export async function getServerSideProps() {
+  const products = await client.product.findMany({
+    include: {
+      _count: {
+        select: {
+          favs: true,
+        },
+      },
+    },
+  })
+  console.log(products)
+
+  return {
+    props: { products: JSON.parse(JSON.stringify(products)) },
+  }
+}
+
+export default Page
