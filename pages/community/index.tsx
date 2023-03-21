@@ -5,6 +5,7 @@ import Layout from '@components/layout'
 import useSWR from 'swr'
 import { Post, User } from '@prisma/client'
 import useCoords from '@libs/client/useCoords'
+import client from '@libs/server/client'
 
 interface PostWithUser extends Post {
   user: User
@@ -19,17 +20,17 @@ interface PostsResponse {
   posts: PostWithUser[]
 }
 
-const Community: NextPage = () => {
-  const { latitude, longitude } = useCoords()
-  const { data } = useSWR<PostsResponse>(
-    latitude && longitude
-      ? `/api/posts?latitude=${latitude}&longitude=${longitude}`
-      : null,
-  )
+const Community: NextPage<{ posts: PostWithUser[] }> = ({ posts }) => {
+  // const { latitude, longitude } = useCoords()
+  // const { data } = useSWR<PostsResponse>(
+  //   latitude && longitude
+  //     ? `/api/posts?latitude=${latitude}&longitude=${longitude}`
+  //     : null,
+  // )
   return (
     <Layout hasTabBar title="동네생활" seoTitle="Question">
       <div className="space-y-4 divide-y-[2px]">
-        {data?.posts?.map((post) => (
+        {posts?.map((post) => (
           <Link
             key={post.id}
             href={`/community/${post.id}`}
@@ -62,7 +63,7 @@ const Community: NextPage = () => {
                     d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                   ></path>
                 </svg>
-                <span>궁금해요 {post._count.wondering}</span>
+                <span>궁금해요 {post._count?.wondering}</span>
               </span>
               <span className="flex space-x-2 items-center text-sm">
                 <svg
@@ -79,7 +80,7 @@ const Community: NextPage = () => {
                     d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                   ></path>
                 </svg>
-                <span>답변 {post._count.answers}</span>
+                <span>답변 {post._count?.answers}</span>
               </span>
             </div>
           </Link>
@@ -104,5 +105,23 @@ const Community: NextPage = () => {
     </Layout>
   )
 }
+
+// getStaticProps는 build time에 실행되어 html에 포함됨
+export async function getStaticProps() {
+  const posts = await client.post.findMany({
+    include: {
+      user: true,
+    },
+  })
+  return {
+    props: {
+      posts: JSON.parse(JSON.stringify(posts)),
+    },
+    // 20초마다 새로운 데이터로 재생성 해줌
+    revalidate: 20,
+  }
+}
+// 이렇게 구현하는 것이 ISR(Incremental Static Regeneration: 단계적 정적 재생성)이다.
+// 20초 뒤에 최신 데이터를 볼 수 있지만, 로딩을 보지 않아도 된다.
 
 export default Community
