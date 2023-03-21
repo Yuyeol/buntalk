@@ -24,6 +24,8 @@ async function handler(
         },
       },
     })
+    // POST 시 getStaticProps revalidate
+    await res.revalidate('/community')
     res.json({
       ok: true,
       post,

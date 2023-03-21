@@ -108,6 +108,8 @@ const Community: NextPage<{ posts: PostWithUser[] }> = ({ posts }) => {
 
 // getStaticProps는 build time에 실행되어 html에 포함됨
 export async function getStaticProps() {
+  console.log('BUILD TIME')
+
   const posts = await client.post.findMany({
     include: {
       user: true,
@@ -118,7 +120,7 @@ export async function getStaticProps() {
       posts: JSON.parse(JSON.stringify(posts)),
     },
     // 20초마다 새로운 데이터로 재생성 해줌
-    revalidate: 20,
+    // revalidate: 20,
   }
 }
 // 이렇게 구현하는 것이 ISR(Incremental Static Regeneration: 단계적 정적 재생성)이다.
