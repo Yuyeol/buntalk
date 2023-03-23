@@ -3,15 +3,11 @@ import { cls } from '@libs/client/utils'
 interface ButtonProps {
   large?: boolean
   text: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
 }
 
-export default function Button({
-  large = false,
-  onClick,
-  text,
-  ...rest
-}: ButtonProps) {
+export default function Button({ large = false, text, ...rest }: ButtonProps) {
   return (
     <button
       {...rest}

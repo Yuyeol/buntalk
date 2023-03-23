@@ -36,6 +36,7 @@ const Blog: NextPage<{ posts: Post[] }> = ({ posts }) => {
 export async function getStaticProps() {
   const blogPosts = readdirSync('./posts').map((file) => {
     const content = readFileSync(`./posts/${file}`, 'utf-8')
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [slug, _] = file.split('.')
     return { ...matter(content).data, slug }
   })

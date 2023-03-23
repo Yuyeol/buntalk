@@ -2,9 +2,7 @@ import type { NextPage } from 'next'
 import Link from 'next/link'
 import FloatingButton from '@components/floating-button'
 import Layout from '@components/layout'
-import useSWR from 'swr'
 import { Post, User } from '@prisma/client'
-import useCoords from '@libs/client/useCoords'
 import client from '@libs/server/client'
 
 interface PostWithUser extends Post {
@@ -13,11 +11,6 @@ interface PostWithUser extends Post {
     wondering: number
     answers: number
   }
-}
-
-interface PostsResponse {
-  ok: boolean
-  posts: PostWithUser[]
 }
 
 const Community: NextPage<{ posts: PostWithUser[] }> = ({ posts }) => {

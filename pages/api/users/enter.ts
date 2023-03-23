@@ -1,11 +1,12 @@
 import mail from '@sendgrid/mail'
-import twilio from 'twilio'
+// import twilio from 'twilio'
 import { NextApiRequest, NextApiResponse } from 'next'
 import withHandler, { ResponseType } from '@libs/server/withHandler'
 import client from '@libs/server/client'
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 mail.setApiKey(process.env.SENDGRID_KEY!)
-const twilioClient = twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN)
+// const twilioClient = twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN)
 
 async function handler(
   req: NextApiRequest,
@@ -15,7 +16,7 @@ async function handler(
   const user = phone ? { phone } : email ? { email } : null
   if (!user) return res.status(400).json({ ok: false })
   const payload = Math.floor(100000 + Math.random() * 900000) + ''
-  const token = await client.token.create({
+  await client.token.create({
     data: {
       payload,
       user: {

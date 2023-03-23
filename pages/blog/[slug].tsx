@@ -6,6 +6,7 @@ import remarkHtml from 'remark-html'
 import remarkParse from 'remark-parse/lib'
 import { unified } from 'unified'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Post: NextPage<{ post: string; data: any }> = ({ post, data }) => {
   return (
     <Layout title={data.title} seoTitle={data.title}>
@@ -19,6 +20,7 @@ const Post: NextPage<{ post: string; data: any }> = ({ post, data }) => {
 
 export function getStaticPaths() {
   const files = readdirSync('./posts').map((file) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [name, extension] = file.split('.')
     return { params: { slug: name } }
   })

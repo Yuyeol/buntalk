@@ -2,12 +2,11 @@ import type { GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import Button from '@components/button'
 import Layout from '@components/layout'
 import { useRouter } from 'next/router'
-import useSWR, { useSWRConfig } from 'swr'
+import useSWR from 'swr'
 import Link from 'next/link'
 import { Product, User } from '@prisma/client'
 import useMutation from '@libs/client/useMutation'
 import { cls } from '@libs/client/utils'
-import useUser from '@libs/client/useUser'
 import Image from 'next/image'
 import ResponsiveImage from '@components/responsive-image'
 import client from '@libs/server/client'
@@ -27,9 +26,8 @@ const ItemDetail: NextPage<ItemDetailResponse> = ({
   relatedProducts,
   isLiked,
 }) => {
-  const { user, isLoading } = useUser()
   const router = useRouter()
-  const { mutate } = useSWRConfig()
+  // const { mutate } = useSWRConfig()
   const { data, mutate: boundMutate } = useSWR<ItemDetailResponse>(
     router.query.id ? `/api/products/${router.query.id}` : null,
   )
