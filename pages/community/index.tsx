@@ -27,6 +27,7 @@ const Community: NextPage<{ posts: PostWithUser[] }> = ({ posts }) => {
   //     ? `/api/posts?latitude=${latitude}&longitude=${longitude}`
   //     : null,
   // )
+
   return (
     <Layout hasTabBar title="동네생활" seoTitle="Question">
       <div className="space-y-4 divide-y-[2px]">
@@ -108,13 +109,7 @@ const Community: NextPage<{ posts: PostWithUser[] }> = ({ posts }) => {
 
 // getStaticProps는 build time에 실행되어 html에 포함됨
 export async function getStaticProps() {
-  console.log('BUILD TIME')
-
-  const posts = await client.post.findMany({
-    include: {
-      user: true,
-    },
-  })
+  const posts = await client.post.findMany({ include: { user: true } })
   return {
     props: {
       posts: JSON.parse(JSON.stringify(posts)),
