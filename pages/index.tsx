@@ -19,7 +19,9 @@ interface ProductsResponse {
 }
 
 const Home: NextPage = () => {
-  const { data } = useSWR<ProductsResponse>('/api/products')
+  const { data } = useSWR<ProductsResponse>(
+    typeof window === 'undefined' ? null : '/api/products',
+  )
   return (
     <Layout title="홈" hasTabBar seoTitle="홈">
       <Head>

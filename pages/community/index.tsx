@@ -13,7 +13,11 @@ interface PostWithUser extends Post {
   }
 }
 
-const Community: NextPage<{ posts: PostWithUser[] }> = ({ posts }) => {
+interface PostsResponse {
+  posts: PostWithUser[]
+}
+
+const Community: NextPage<PostsResponse> = ({ posts }) => {
   // const { latitude, longitude } = useCoords()
   // const { data } = useSWR<PostsResponse>(
   //   latitude && longitude

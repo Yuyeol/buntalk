@@ -19,7 +19,9 @@ interface ReviewsResponse {
 
 const Profile: NextPage = () => {
   const { user } = useUser()
-  const { data } = useSWR<ReviewsResponse>('/api/reviews')
+  const { data } = useSWR<ReviewsResponse>(
+    typeof window === 'undefined' ? null : '/api/reviews',
+  )
   return (
     <Layout hasTabBar title="나의 캐럿" seoTitle="나의 캐럿">
       <div className="px-4">
